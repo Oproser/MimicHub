@@ -365,7 +365,7 @@ MimicVaribles.KickerAim = not MimicVaribles.KickerAim
 end
 end)
 
-local Move = Fusion.AddCategory(0.4, "Right", "Movement")
+local Move = Fusion.AddCategory(0.3, "Right", "Movement")
 
 
 local JumpPa = Fusion.AddSpacer("Super Jump", "Right")
