@@ -1,405 +1,137 @@
---/////////////////////////////////////////////--
-------------------Main Varibles------------------
---/////////////////////////////////////////////--
-for i,v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
-    if v:IsA("LocalScript") and v.Name ~= "KeyDrawer" and v.Name ~= "Animate" and v.Name ~= "AnimationHandler" then
-         v.Disabled = true
+-- // define alias for http function
+
+local http_request = http_request;
+if syn then
+	http_request = syn.request
+elseif SENTINEL_V2 then
+	function http_request(tb)
+		return {
+			StatusCode = 200;
+			Body = request(tb.Url, tb.Method, (tb.Body or ''))
+		}
+	end
+end
+
+if (not http_request) then
+	return game:GetService('Players').LocalPlayer:Kick('Unable to find proper request function')
+end
+
+-- // define hash function
+
+local hash; do
+    local MOD = 2^32
+    local MODM = MOD-1
+    local bxor = bit32.bxor;
+    local band = bit32.band;
+    local bnot = bit32.bnot;
+    local rshift1 = bit32.rshift;
+    local rshift = bit32.rshift;
+    local lshift = bit32.lshift;
+    local rrotate = bit32.rrotate;
+
+    local str_gsub = string.gsub;
+    local str_fmt = string.format;
+    local str_byte = string.byte;
+    local str_char = string.char;
+    local str_rep = string.rep;
+
+    local k = {
+	    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
+	    0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+	    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+	    0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+	    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc,
+	    0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+	    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7,
+	    0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+	    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+	    0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+	    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3,
+	    0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+	    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5,
+	    0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+	    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+	    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+    }
+    local function str2hexa(s)
+        return (str_gsub(s, ".", function(c) return str_fmt("%02x", str_byte(c)) end))
+    end
+    local function num2s(l, n)
+        local s = ""
+        for i = 1, n do
+            local rem = l % 256
+            s = str_char(rem) .. s
+            l = (l - rem) / 256
+        end
+        return s
+    end
+    local function s232num(s, i)
+        local n = 0
+        for i = i, i + 3 do n = n*256 + str_byte(s, i) end
+        return n
+        end
+        local function preproc(msg, len)
+        local extra = 64 - ((len + 9) % 64)
+        len = num2s(8 * len, 8)
+        msg = msg .. "\128" .. str_rep("\0", extra) .. len
+        assert(#msg % 64 == 0)
+        return msg
+    end
+    local function initH256(H)
+        H[1] = 0x6a09e667
+        H[2] = 0xbb67ae85
+        H[3] = 0x3c6ef372
+        H[4] = 0xa54ff53a
+        H[5] = 0x510e527f
+        H[6] = 0x9b05688c
+        H[7] = 0x1f83d9ab
+        H[8] = 0x5be0cd19
+        return H
+    end
+    local function digestblock(msg, i, H)
+        local w = {}
+        for j = 1, 16 do w[j] = s232num(msg, i + (j - 1)*4) end
+        for j = 17, 64 do
+            local v = w[j - 15]
+            local s0 = bxor(rrotate(v, 7), rrotate(v, 18), rshift(v, 3))
+            v = w[j - 2]
+            w[j] = w[j - 16] + s0 + w[j - 7] + bxor(rrotate(v, 17), rrotate(v, 19), rshift(v, 10))
+        end
+        local a, b, c, d, e, f, g, h = H[1], H[2], H[3], H[4], H[5], H[6], H[7], H[8]
+        for i = 1, 64 do
+            local s0 = bxor(rrotate(a, 2), rrotate(a, 13), rrotate(a, 22))
+            local maj = bxor(band(a, b), band(a, c), band(b, c))
+            local t2 = s0 + maj
+            local s1 = bxor(rrotate(e, 6), rrotate(e, 11), rrotate(e, 25))
+            local ch = bxor(band(e, f), band(bnot(e), g))
+            local t1 = h + s1 + ch + k[i] + w[i]
+            h, g, f, e, d, c, b, a = g, f, e, d + t1, c, b, a, t1 + t2
+        end
+        H[1] = band(H[1] + a)
+        H[2] = band(H[2] + b)
+        H[3] = band(H[3] + c)
+        H[4] = band(H[4] + d)
+        H[5] = band(H[5] + e)
+        H[6] = band(H[6] + f)
+        H[7] = band(H[7] + g)
+        H[8] = band(H[8] + h)
+    end
+    function hash(msg, t) 
+        msg = preproc(msg, #msg)
+        local H = initH256({})
+        for i = 1, #msg, 64 do digestblock(msg, i, H) end
+        return str2hexa(num2s(H[1], 4) .. num2s(H[2], 4) .. num2s(H[3], 4) .. num2s(H[4], 4) .. num2s(H[5], 4) .. num2s(H[6], 4) .. num2s(H[7], 4) .. num2s(H[8], 4))
     end
 end
 
-local MimicVaribles = {
-   HitboxEnabled = false,
-   HitboxSize = Vector3.new(2,2,1),
-   HitboxTrans = 0,
-   NoclipEnabled = false,
-   FaceEnemyEnabled = false,
-   TPEnabled = false,
-   WalkSpeed = 16,
-   JumpPower = 50,
-   JumpPowerEnabled = false,
-   WalkSpeedValue = 16,
-   LockEnabled = false,
-   MagsEnabled = false,
-   MagDistance = 15,
-   KickerAim = false
-}
-local LocalPlayer = game:GetService("Players").LocalPlayer
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
---/////////////////////////////////////////////--
-------------------Main Functions-----------------
---/////////////////////////////////////////////--
-function getRoot(cha3r)
-   local rootPart = cha3r:FindFirstChild('HumanoidRootPart') or cha3r:FindFirstChild('Torso') or cha3r:FindFirstChild('UpperTorso')
-   return rootPart
-end
-function GetClosestPlayer()
-   local speakerChar = LocalPlayer.Character
-   if not speakerChar or not getRoot(speakerChar) then return end
-   local lowest = math.huge
-   local NearestPlayer = nil
-   for _,plr in pairs(game:GetService("Players"):GetPlayers()) do
-      if plr ~= LocalPlayer then
-         local distance = plr:DistanceFromCharacter(getRoot(speakerChar).Position)
-         if distance < lowest then
-            lowest = distance
-            NearestPlayer = plr
-         end
-      end
-   end
-   return NearestPlayer
-end
 
---/////////////////////////////////////////////--
-------------------Main Script--------------------
---/////////////////////////////////////////////--
-
-local UILibrary = loadstring(game:HttpGet("https://pastebin.com/raw/APv1Fw8r"))()
-
-local MimicHub = UILibrary.Load("Mimic Hub")
-
---/////////////////////////////////////////////--
---------------------Eletric----------------------
---/////////////////////////////////////////////--
-
-if game.PlaceId == 2262441883 then
-
-   local Eletric = MimicHub.AddPage("Eletric", true)
-
-   local Combat = Eletric.AddCategory(0.435, "Left", "Combat")
-
-   local Spac = Eletric.AddSpacer("Hitbox Expander", "Left")
-
-   local Hitbox = Eletric.AddButton("Hitbox Expender", "Left", function()
-   if MimicVaribles.HitboxEnabled == false then
-      MimicVaribles.HitboxEnabled = not MimicVaribles.HitboxEnabled
-      RunService.RenderStepped:Connect(function()
-      if MimicVaribles.HitboxEnabled == true then
-         for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-            pcall(function()
-            if v ~= game:GetService("Players").LocalPlayer  then
-               print("inside")
-               v.Character.HumanoidRootPart.Size = MimicVaribles.HitboxSize
-               v.Character.HumanoidRootPart.Transparency = MimicVaribles.HitboxTrans
-               v.Character.HumanoidRootPart.BrickColor = BrickColor.new("Bright green")
-               v.Character.HumanoidRootPart.Material = "Neon"
-               v.Character.HumanoidRootPart.CanCollide = false
-            end
-            end)
-         end
-      end
-      wait()
-      end)
-   else
-      MimicVaribles.HitboxEnabled = not MimicVaribles.HitboxEnabled
-      for i,v in pairs(game:GetService("Players"):GetPlayers()) do
-         pcall(function() if v ~= game:GetService("Players").LocalPlayer then
-            v.Character.HumanoidRootPart.Size = Vector3.new(2,2,1)
-            v.Character.HumanoidRootPart.CanCollide = true
-            v.Character.HumanoidRootPart.Transparency = 1
-         end
-         end)
-      end
-   end
-   end)
-
-
-
-
-   local Brightness = Eletric.AddSlider("Transparency", "Left", {Min = 0, Max = 10, Def = 5}, function(Value)
-   MimicVaribles.HitboxTrans = Value * 0.1
-   end)
-
-   local Hit = Eletric.AddSlider("Size", "Left", {Min = 0, Max = 20, Def = 10}, function(Value)
-   MimicVaribles.HitboxSize = Vector3.new(Value,Value,Value)
-   end)
-
-   local Spac = Eletric.AddSpacer("Noclip", "Left")
-
-   local noci = Eletric.AddInputButton("Enabled", "Left", function()
-   if MimicVaribles.NoclipEnabled == false then
-      MimicVaribles.NoclipEnabled = not MimicVaribles.NoclipEnabled
-      function NoclipLoop()
-         RunService.RenderStepped:Connect(function()
-         if MimicVaribles.NoclipEnabled == true then
-            for _, child in pairs(game:GetService("Players").LocalPlayer.Character:GetDescendants()) do
-               if child:IsA("BasePart") and child.CanCollide == true and child.Name ~= floatName then
-                  child.CanCollide = false
-               end
-            end
-         end
-         end)
-      end
-      coroutine.wrap(NoclipLoop)()
-   else
-      MimicVaribles.NoclipEnabled = not MimicVaribles.NoclipEnabled
-   end
-   end)
-
-end
---/////////////////////////////////////////////--
---------------------BedWars----------------------
---/////////////////////////////////////////////--
-
-if game.PlaceId == 6872265039 then
-
-   local BedWars = MimicHub.AddPage("BedWars", true)
-
-   local Combat = BedWars.AddCategory(0.435, "Left", "Combat")
-
-   local FaceEnemy = BedWars.AddSpacer("Face Enemy", "Left")
-
-   coroutine.wrap(function()
-   game:GetService('RunService').Heartbeat:Connect(function()
-   if MimicVaribles.LockEnabled == true then
-      local Pln = GetClosestPlayer()
-      local otherRoot = Pln.Character.HumanoidRootPart
-      local hum = LocalPlayer.Character.HumanoidRootPart
-      hum.CFrame = CFrame.lookAt(hum.Position, Vector3.new(otherRoot.Position.X+2, hum.Position.Y, otherRoot.Position.Z+2))
-   end
-   end)
-   end)()
-
-   local LockEN = BedWars.AddInputButton("Enabled", "Left", function()
-   if MimicVaribles.LockEnabled == false then
-      MimicVaribles.LockEnabled = not MimicVaribles.LockEnabled
-   else
-      MimicVaribles.LockEnabled = not MimicVaribles.LockEnabled
-
-   end
-   end)
-
-end
-
---/////////////////////////////////////////////--
---------------------Da Hood----------------------
---/////////////////////////////////////////////--
-
-if game.PlaceId == 2788229376 then
-
-   local DaHood = MimicHub.AddPage("DaHood", true)
-
-   local Movement = DaHood.AddCategory(0.435, "Left", "Movement")
-
-   local WalkSpeed = DaHood.AddSpacer("Super Speed", "Left")
-
-   local FlightAcceleration = 1
-   local TurnSpeed = 1
-
-   local UserInputService = game:GetService("UserInputService")
-   local StarterGui = game:GetService("StarterGui")
-   local RunService = game:GetService("RunService")
-   local Players = game:GetService("Players")
-   local User = Players.LocalPlayer
-   local Camera = workspace.CurrentCamera
-   local UserCharacter = nil
-   local UserRootPart = nil
-   local Connection = nil
-
-
-   workspace.Changed:Connect(function()
-   Camera = workspace.CurrentCamera
-   end)
-
-   local setCharacter = function(c)
-   UserCharacter = c
-   UserRootPart = c:WaitForChild("HumanoidRootPart")
-end
-
-User.CharacterAdded:Connect(setCharacter)
-if User.Character then
-   setCharacter(User.Character)
-end
-
-local CurrentVelocity = Vector3.new(0,0,0)
-local Speed = function()
-local BaseVelocity = Vector3.new(0,0,0)
-if UserRootPart then
-   local car = UserRootPart:GetRootPart()
-   car.RotVelocity = Vector3.new(0,0,0)
-   if UserInputService:IsKeyDown(Enum.KeyCode.W) then
-      BaseVelocity = BaseVelocity + (Camera.CFrame.LookVector * MimicVaribles.WalkSpeedValue)
-   end
-   if UserInputService:IsKeyDown(Enum.KeyCode.A) then
-      BaseVelocity = BaseVelocity - (Camera.CFrame.RightVector * MimicVaribles.WalkSpeedValue)
-   end
-   if UserInputService:IsKeyDown(Enum.KeyCode.S) then
-      BaseVelocity = BaseVelocity - (Camera.CFrame.LookVector * MimicVaribles.WalkSpeedValue)
-   end
-   if UserInputService:IsKeyDown(Enum.KeyCode.D) then
-      BaseVelocity = BaseVelocity + (Camera.CFrame.RightVector * MimicVaribles.WalkSpeedValue)
-   end
-   CurrentVelocity = (CurrentVelocity:Lerp(BaseVelocity,math.clamp(1 * FlightAcceleration, 0, 1)))+ Vector3.new(0,2,0)
-
-   car.Velocity = Vector3.new(CurrentVelocity.X,0,CurrentVelocity.Z)
-end
-end
-
-
-local LockEN = DaHood.AddInputButton("Enabled", "Left", function()
-if MimicVaribles.WalkSpeed == false then
-MimicVaribles.WalkSpeed = not MimicVaribles.WalkSpeed
-Connection:Disconnect()
-Connection = nil
-CurrentVelocity = Vector3.new(0,0,0)
-else
-MimicVaribles.WalkSpeed = not MimicVaribles.WalkSpeed
-Connection = RunService.Heartbeat:Connect(Speed)
-end
-end)
-
-
-local O = DaHood.AddSlider("Walkspeed", "Left", {Min = 0, Max = 100, Def = 10}, function(Value)
-MimicVaribles.WalkSpeedValue = Value
-end)
-
-
---]]
-
-local TeleportMouse = DaHood.AddSpacer("T To Teleport", "Left")
-
-local TPMouse = DaHood.AddButton("Enabled", "Left", function()
-if MimicVaribles.TPEnabled == false then
-MimicVaribles.TPEnabled = not MimicVaribles.TPEnabled
-plr = game.Players.LocalPlayer
-hum = plr.Character.HumanoidRootPart
-mouse = plr:GetMouse()
-mouse.KeyDown:connect(
-function(key)
-   if key == "t" and MimicVaribles.TPEnabled == true then
-      if mouse.Target then
-         local Info = TweenInfo.new(
-         0.01,Enum.EasingStyle.Sine,Enum.EasingDirection.In,0,false,0
-         )
-         local tween = game:GetService("TweenService"):Create(hum,Info,{
-            CFrame = CFrame.new(mouse.Hit.x, mouse.Hit.y+3, mouse.Hit.z)
-         })
-         tween:Play()
-      end
-   end
-end
-)
-
-else
-MimicVaribles.TPEnabled = not MimicVaribles.TPEnabled
-end
-end)
-end
-
---/////////////////////////////////////////////--
-----------------Fusion Football------------------
---/////////////////////////////////////////////--
-
-if game.PlaceId == 8204899140 or game.PlaceId == 8206123457 or game == game then
-local Fusion = MimicHub.AddPage("Fusion", true)
-
-local Gameplay = Fusion.AddCategory(0.4, "Left", "Gameplay")
-
-local UserInputService = game:GetService('UserInputService');
-local Players = game:GetService('Players')
-local Player = Players["LocalPlayer"];
-local Char = Player.Character
-local MagEnabled = false
-local StarterGui = game:GetService("StarterGui")
-
-
-coroutine.wrap(function()
-game:GetService('RunService').Heartbeat:Connect(function()
-if MimicVaribles.MagsEnabled == true then
-local HRP = Char and Char:FindFirstChild('HumanoidRootPart')
-local Head = Char and Char:FindFirstChild('Head')
-local Ball = HRP and workspace:FindFirstChild('Football')
-local Mag = Ball and (function(p, p1)
-return ((p.Position - p1.Position).magnitude)
-end)
-local pos = Mag(HRP, Ball)
-pos = Mag(HRP, Ball)
-if pos <= MimicVaribles.MagDistance then
-   Ball.CFrame = Head.CFrame
-end
-end
-end)
-end)()
-
-local MagSpacer = Fusion.AddSpacer("Mags", "Left")
-
-local Mags = Fusion.AddInputButton("Enabled", "Left", function()
-if MimicVaribles.MagsEnabled == false then
-MimicVaribles.MagsEnabled = not MimicVaribles.MagsEnabled
-else
-MimicVaribles.MagsEnabled = not MimicVaribles.MagsEnabled
-end
-end)
-
-local I = Fusion.AddSlider("Mag Distance", "Left", {Min = 1, Max = 100, Def = 15}, function(Value)
-MimicVaribles.MagDistance = Value
-end)
-
-local KickSpacer = Fusion.AddSpacer("Perfect Kicks", "Left")
-
-local se = false
-coroutine.wrap(function()
-game:GetService('RunService').Heartbeat:Connect(function()
-if MimicVaribles.KickerAim == true then
-if Player.PlayerGui:WaitForChild("KickerGui").Meter.Cursor.Position.Y.Scale < 0.023 and se == false then
-   game:GetService("VirtualInputManager"):SendMouseButtonEvent(0,0,0,true,game,0)
-   wait()
-   game:GetService("VirtualInputManager"):SendMouseButtonEvent(0,0,0,false,game,0)
-   se = true
-end
-if Player.PlayerGui:WaitForChild("KickerGui").Meter.Cursor.Position.Y.Scale > 0.89 and se == true then
-   game:GetService("VirtualInputManager"):SendMouseButtonEvent(0,0,0,true,game,0)
-   wait()
-   game:GetService("VirtualInputManager"):SendMouseButtonEvent(0,0,0,false,game,0)
-   se = false
-end
-end
-end)
-end)()
-
-local KickAim = Fusion.AddButton("Enabled", "Left", function()
-if MimicVaribles.KickerAim == false then
-MimicVaribles.KickerAim = not MimicVaribles.KickerAim
-else
-MimicVaribles.KickerAim = not MimicVaribles.KickerAim
-end
-end)
-
-local Move = Fusion.AddCategory(0.4, "Right", "Movement")
-
-
-local JumpPa = Fusion.AddSpacer("Super Jump", "Right")
-
-local Player = game:GetService'Players'.LocalPlayer;
-local UIS = game:GetService'UserInputService';
-
-function Action(Object, Function) if Object ~= nil then Function(Object); end end
-
-UIS.InputBegan:connect(function(UserInput)
-    if UserInput.UserInputType == Enum.UserInputType.Keyboard and UserInput.KeyCode == Enum.KeyCode.Space then
-        Action(Player.Character.Humanoid, function(self)
-            if self:GetState() ~= Enum.HumanoidStateType.Jumping and self:GetState() ~= Enum.HumanoidStateType.Freefall then
-                Action(self.Parent.HumanoidRootPart, function(self)
-                    if MimicVaribles.JumpPowerEnabled == true then
-                    self.Velocity = Vector3.new(0, MimicVaribles.JumpPower, 0);
-                    end
-                end)
-            end
-        end)
+local data = http_request({
+	Url = ('https://test.leoleo4000.repl.co/?key=' .. _G.Key);
+	Method = 'GET';
+})
+
+if data.StatusCode == 200 then
+	if data.Body == hash(_G.Key) then
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Oproser/MimicHub/main/Main"))()
     end
-end)
-
-
-local Jn = Fusion.AddInputButton("Enabled", "Right", function()
-if MimicVaribles.JumpPowerEnabled == false then
-MimicVaribles.JumpPowerEnabled = not MimicVaribles.JumpPowerEnabled
-else
-MimicVaribles.JumpPowerEnabled = not MimicVaribles.JumpPowerEnabled
-end
-end)
-
-local O = Fusion.AddSlider("JumpPower", "Right", {Min = 0, Max = 150, Def = 50}, function(Value)
-MimicVaribles.JumpPower = Value
-end)
-
 end
