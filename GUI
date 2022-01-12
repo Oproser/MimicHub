@@ -627,6 +627,7 @@ function UILibrary.Load(GUITitle)
 				end
 			end)
 			SliderKill = UserInputService.InputEnded:Connect(function(UserInput)
+			
 				if UserInput.UserInputType == Enum.UserInputType.MouseButton1 then
 					dragging = false
 					Tween(Fill, {ImageTransparency = 0.7})
@@ -705,7 +706,8 @@ function UILibrary.Load(GUITitle)
 
 
 			function InputButton()
-				InputBut.MouseButton1Click:Connect(function()
+				InputBut.MouseButton1Click:Connect(function(input, gameProcessed)
+				if gameProcessed then return end
 					selecting = false
 					if selecting == false then
 						InputBut.Text = "[ . . . ]"
@@ -721,6 +723,7 @@ function UILibrary.Load(GUITitle)
 					end
 				end)
 				UserInputService.InputBegan:Connect(function(input, gameProcessed)
+				if gameProcessed then return end
 					if selecting == true then
 						if input.KeyCode == keyn then
 							if Color == true then
@@ -734,7 +737,8 @@ function UILibrary.Load(GUITitle)
 						end
 					end
 				end)
-				Inside_2.MouseButton1Down:Connect(function()
+				Inside_2.MouseButton1Down:Connect(function(i,gameProcessed)
+					if gameProcessed then return end
 					if Color == true then
 						Color = not Color
 						Inside_2.BackgroundColor3 = Color3.fromRGB(170,170,170)
