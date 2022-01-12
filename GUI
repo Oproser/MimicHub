@@ -10,7 +10,7 @@ local Player = game.Players.LocalPlayer
 local Mouse = Player:GetMouse()
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local CoreGuiService = game.Players.LocalPlayer.PlayerGui
+local CoreGuiService = game:GetService("CoreGui")
 local RunService = game:GetService("RunService")
 local TextService = game:GetService("TextService")
 
@@ -42,7 +42,11 @@ function UILibrary.Load(GUITitle)
 	MimicHub.Name = "MainGui"
 	MimicHub.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 	MimicHub.ResetOnSpawn = false
+	if game.PlaceId == 8204899140 then
 	MimicHub.Parent = game.Players.LocalPlayer.PlayerGui
+	else
+	   MimicHub.Parent = CoreGuiService
+	end
 	
 	local Frame = Instance.new("Frame")
 	Frame.Parent = MimicHub
