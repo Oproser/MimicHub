@@ -1,0 +1,792 @@
+--[[
+	 __  __              _____   _   _ 
+	|  \/  |     /\     |_   _| | \ | |
+	| \  / |    /  \      | |   |  \| |
+	| |\/| |   / /\ \     | |   | . ` |
+	| |  | |  / ____ \   _| |_  | |\  |
+	|_|  |_| /_/    \_\ |_____| |_| \_|
+--]]
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local CoreGuiService = game.Players.LocalPlayer.PlayerGui
+local RunService = game:GetService("RunService")
+local TextService = game:GetService("TextService")
+
+local TweenTime = 0.1
+local Level = 1
+
+local GlobalTweenInfo = TweenInfo.new(TweenTime)
+local AlteredTweenInfo = TweenInfo.new(TweenTime, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+
+local function Tween(GuiObject, Dictionary)
+	local TweenBase = TweenService:Create(GuiObject, GlobalTweenInfo, Dictionary)
+	TweenBase:Play()
+	return TweenBase
+end
+
+local function GetXY(GuiObject)
+	local X, Y = Mouse.X - GuiObject.AbsolutePosition.X, Mouse.Y - GuiObject.AbsolutePosition.Y
+	local MaxX, MaxY = GuiObject.AbsoluteSize.X, GuiObject.AbsoluteSize.Y
+	X, Y = math.clamp(X, 0, MaxX), math.clamp(Y, 0, MaxY)
+	return X, Y, X/MaxX, Y/MaxY
+end
+
+local UILibrary = {}
+
+function UILibrary.Load(GUITitle)
+
+	local MimicHub = Instance.new("ScreenGui")
+
+	MimicHub.Name = "MainGui"
+	MimicHub.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	MimicHub.ResetOnSpawn = false
+	MimicHub.Parent = game.Players.LocalPlayer.PlayerGui
+	
+	local Frame = Instance.new("Frame")
+	Frame.Parent = MimicHub
+	Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Frame.BackgroundTransparency = 1.000
+	Frame.ClipsDescendants = true
+	Frame.Position = UDim2.new(0.390417039, 0, 0.396321058, 0)
+	Frame.Size = UDim2.new(0.217391297, 0, 0.167224079, 0)
+	
+	local StartUp = Instance.new("Frame")
+	StartUp.Name = "StartUp"
+	StartUp.Parent = Frame
+	StartUp.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+	StartUp.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	StartUp.Position = UDim2.new(0.223, 0,1.2, 0)
+	StartUp.Size = UDim2.new(0.557603478, 0, 0.187575534, 0)
+	
+	local Color = Instance.new("Frame")
+	Color.Name = "Color"
+	Color.Parent = StartUp
+	Color.BackgroundColor3 = Color3.fromRGB(79, 79, 79)
+	Color.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Color.Position = UDim2.new(0, 0, -0.0941682756, 0)
+	Color.Size = UDim2.new(1, 0, 0.0599999987, 0)
+	
+	local Background = Instance.new("Frame")
+	Background.Name = "Background"
+	Background.Parent = StartUp
+	Background.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+	Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Background.Position = UDim2.new(0, 0, -0.718505025, 0)
+	Background.Size = UDim2.new(1, 0, 0.621421993, 0)
+	
+	local HubName = Instance.new("TextLabel")
+	HubName.Name = "HubName"
+	HubName.Parent = Background
+	HubName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	HubName.BackgroundTransparency = 1.000
+	HubName.BorderSizePixel = 0
+	HubName.Position = UDim2.new(0.348286033, 0, 0.0776939094, 0)
+	HubName.Size = UDim2.new(0.299916357, 0, 0.870048165, 0)
+	HubName.Font = Enum.Font.GothamSemibold
+	HubName.Text = "Mimic Hub"
+	HubName.TextColor3 = Color3.fromRGB(170, 170, 170)
+	HubName.TextScaled = true
+	HubName.TextSize = 6.000
+	HubName.TextWrapped = true
+	
+	local GetName = game:GetService("MarketplaceService"):GetProductInfo(game.PlaceId)
+	local GameL = Instance.new("TextLabel")
+	GameL.Name = "GameL"
+	GameL.Parent = StartUp
+	GameL.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	GameL.BackgroundTransparency = 1.000
+	GameL.BorderSizePixel = 0
+	GameL.Position = UDim2.new(0.206896976, 0, -0.00767417252, 0)
+	GameL.Size = UDim2.new(0.586979151, 0, 0.512210906, 0)
+	GameL.Font = Enum.Font.GothamSemibold
+	GameL.Text = GetName.Name .. " - Loaded"
+	GameL.TextColor3 = Color3.fromRGB(170, 170, 170)
+	GameL.TextScaled = true
+	GameL.TextSize = 6.000
+	GameL.TextWrapped = true
+	
+	local ID = Instance.new("TextLabel")
+	ID.Name = "ID"
+	ID.Parent = StartUp
+	ID.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	ID.BackgroundTransparency = 1.000
+	ID.BorderSizePixel = 0
+	ID.Position = UDim2.new(0.365424216, 0, 0.476079732, 0)
+	ID.Size = UDim2.new(0.26992473, 0, 0.512210906, 0)
+	ID.Font = Enum.Font.GothamSemibold
+	ID.Text = "- " .. game.PlaceId
+	ID.TextColor3 = Color3.fromRGB(131, 131, 131)
+	ID.TextScaled = true
+	ID.TextSize = 6.000
+	ID.TextWrapped = true
+	
+	local Draggable = Instance.new("Frame")
+	Draggable.Name = "Draggable"
+	Draggable.Selectable = true
+	Draggable.Active = true
+	Draggable.Draggable = true
+	Draggable.Parent = MimicHub
+	Draggable.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Draggable.BackgroundTransparency = 0.800
+	Draggable.Position = UDim2.new(0.402097404, 0, 1.2, 0)
+	Draggable.Size = UDim2.new(0.198127821, 0, 0.0242592432, 0)
+
+	local Main = Instance.new("Frame")
+	Main.Name = "Main"
+	Main.Parent = Draggable
+	Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Main.BackgroundTransparency = 1.000
+	Main.BorderSizePixel = 0
+	Main.Position = UDim2.new(0, 0, 0.0190001167, 0)
+	Main.Size = UDim2.new(0.99999994, 0, 16.9348316, 0)
+
+	local Background = Instance.new("Frame")
+	Background.Name = "BackgroundTitle"
+	Background.Parent = Main
+	Background.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+	Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Background.Position = UDim2.new(-0.00447602896, 0, -0.00360253779, 0)
+	Background.Size = UDim2.new(1.00447559, 0, 0.0528264903, 0)
+
+	local TextLabel = Instance.new("TextLabel")
+	TextLabel.Parent = Background
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.BackgroundTransparency = 1.000
+	TextLabel.BorderSizePixel = 0
+	TextLabel.Position = UDim2.new(0.0226625651, 0, 0.0776939094, 0)
+	TextLabel.Size = UDim2.new(0.183194309, 0, 0.810624897, 0)
+	TextLabel.Font = Enum.Font.GothamSemibold
+	TextLabel.Text = GUITitle
+	TextLabel.TextColor3 = Color3.fromRGB(170, 170, 170)
+	TextLabel.TextScaled = true
+	TextLabel.TextSize = 6.000
+	TextLabel.TextWrapped = true
+
+	local Color = Instance.new("Frame")
+	Color.Name = "Color"
+	Color.Parent = Main
+	Color.BackgroundColor3 = Color3.fromRGB(79, 79, 79)
+	Color.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Color.Position = UDim2.new(-0.00447602896, 0, 0.0492239036, 0)
+	Color.Size = UDim2.new(1.00399995, 0, 0.00700000022, 0)
+
+	local Background_2 = Instance.new("Frame")
+	Background_2.Name = "Background"
+	Background_2.Parent = Main
+	Background_2.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+	Background_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Background_2.Position = UDim2.new(-0.00447602896, 0, 0.108948193, 0)
+	Background_2.Size = UDim2.new(1.00447345, 0, 0.92028296, 0)
+	Background_2.ZIndex = 1
+
+	local Menus = Instance.new("Frame")
+	Menus.Name = "Menus"
+	Menus.Parent = Main
+	Menus.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+	Menus.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Menus.Position = UDim2.new(-0.00447602896, 0, 0.0562239178, 0)
+	Menus.Size = UDim2.new(1.00399983, 0, 0.0527242906, 0)
+	Menus.ZIndex = 2
+
+
+	local UIListLayout = Instance.new("UIListLayout")
+	UIListLayout.Parent = Menus
+	UIListLayout.FillDirection = Enum.FillDirection.Horizontal
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+	UIListLayout.Padding = UDim.new(0.0199999996, 0)
+
+	local UIPadding = Instance.new("UIPadding")
+	UIPadding.Parent = Menus
+	UIPadding.PaddingLeft = UDim.new(0.0199999996, 0)
+	
+    --[[
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	--]]
+
+	local Info = TweenInfo.new(
+		1,Enum.EasingStyle.Quad,Enum.EasingDirection.Out,0,false,0
+	)
+	local tween = TweenService:Create(StartUp,Info,{
+		Position = UDim2.new(0.223, 0,0.8, 0)
+	})
+	tween:Play()
+	wait(2)
+	local Info = TweenInfo.new(
+		1,Enum.EasingStyle.Quad,Enum.EasingDirection.In,0,false,0
+	)
+	local tween = TweenService:Create(StartUp,Info,{
+		Position = UDim2.new(0.223, 0,1.2, 0)
+	})
+	tween:Play()
+	wait(1.1)
+	
+
+	local Info = TweenInfo.new(
+		2,Enum.EasingStyle.Quad,Enum.EasingDirection.Out,0,false,0
+	)
+	local tween = TweenService:Create(Draggable,Info,{
+		Position = UDim2.new(0.402097404, 0, 0.3, 0)
+	})
+	tween:Play()
+
+
+    --[[
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	--]]
+
+	local TabLibrary = {}
+
+	function TabLibrary.AddPage(PageTitle, PlayerBarIncluded)
+
+		local TabButton = Instance.new("TextButton")
+		TabButton.Name = PageTitle.."Button"
+		TabButton.Parent = Menus
+		TabButton.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+		TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TabButton.Position = UDim2.new(0.0199998654, 0, 0.298863918, 0)
+		TabButton.Size = UDim2.new(0.215158626, 0, 0.701135755, 0)
+		TabButton.Font = Enum.Font.GothamSemibold
+		TabButton.Text = PageTitle
+		TabButton.TextColor3 = Color3.fromRGB(170, 170, 170)
+		TabButton.TextSize = 14.000
+		TabButton.AutoButtonColor = false
+
+		local Cool2 = Instance.new("Frame")
+		Cool2.Name = "Cool"
+		Cool2.Parent = TabButton
+		Cool2.Visible = PlayerBarIncluded
+		Cool2.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+		Cool2.BorderSizePixel = 0
+		Cool2.Position = UDim2.new(0, 0, 0.999995947, 0)
+		Cool2.Size = UDim2.new(1, 0, 0.470514745, 0)
+		Cool2.ZIndex = 3
+
+		local Page = Instance.new("Frame")
+		Page.Visible = PlayerBarIncluded
+		Page.Name = PageTitle
+		Page.Parent = Main
+		Page.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Page.BackgroundTransparency = 1.000
+		Page.Position = UDim2.new(-0.00537109375, 0, 0.108948193, 0)
+		Page.Size = UDim2.new(1.00489485, 0, 0.920283139, 0)
+		Page.ZIndex = 5
+
+		local Row1 = Instance.new("Frame")
+		Row1.Name = "Row1" .. PageTitle
+		Row1.Parent = Page
+		Row1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Row1.BackgroundTransparency = 1.000
+		Row1.BorderSizePixel = 0
+		Row1.Size = UDim2.new(0.508670211, 0, 0.999999762, 0)
+		Row1.ZIndex = 5
+
+		local UIPadding_3 = Instance.new("UIPadding")
+		UIPadding_3.Parent = Row1
+		UIPadding_3.PaddingLeft = UDim.new(0.0500000007, 0)
+		UIPadding_3.PaddingRight = UDim.new(0.0500000007, 0)
+		UIPadding_3.PaddingTop = UDim.new(0.0299999993, 0)
+
+		local UIListLayout_3 = Instance.new("UIListLayout")
+		UIListLayout_3.Parent = Row1
+		UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_3.Padding = UDim.new(0.025, 0)
+
+		local ButtonRow1 = Instance.new("Frame")
+		ButtonRow1.Name = "ButtonRow1" .. PageTitle
+		ButtonRow1.Parent = Page
+		ButtonRow1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ButtonRow1.BackgroundTransparency = 1.000
+		ButtonRow1.BorderSizePixel = 0
+		ButtonRow1.Size = UDim2.new(0.508670211, 0, 0.999999762, 0)
+		ButtonRow1.ZIndex = 5
+
+		local UIPadding_3 = Instance.new("UIPadding")
+		UIPadding_3.Parent = ButtonRow1
+		UIPadding_3.PaddingLeft = UDim.new(0.0790000036, 0)
+		UIPadding_3.PaddingRight = UDim.new(0.0299999993, 0)
+		UIPadding_3.PaddingTop = UDim.new(0.025, 0)
+
+		local UIListLayout_3 = Instance.new("UIListLayout")
+		UIListLayout_3.Parent = ButtonRow1
+		UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_3.Padding = UDim.new(0.0299999993, 0)
+
+		local Row2 = Instance.new("Frame")
+		Row2.Name = "Row2" .. PageTitle
+		Row2.Parent = Page
+		Row2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Row2.BackgroundTransparency = 1.000
+		Row2.BorderSizePixel = 0
+		Row2.Position = UDim2.new(0.507151604, 0, 0, 0)
+		Row2.Size = UDim2.new(0.492848307, 0, 0.999999762, 0)
+		Row2.ZIndex = 5
+
+		local UIPadding_3 = Instance.new("UIPadding")
+		UIPadding_3.Parent = Row2
+		UIPadding_3.PaddingLeft = UDim.new(0.0500000007, 0)
+		UIPadding_3.PaddingRight = UDim.new(0.0500000007, 0)
+		UIPadding_3.PaddingTop = UDim.new(0.0299999993, 0)
+
+		local UIListLayout_3 = Instance.new("UIListLayout")
+		UIListLayout_3.Parent = Row2
+		UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_3.Padding = UDim.new(0.0299999993, 0)
+
+		local ButtonRow2 = Instance.new("Frame")
+		ButtonRow2.Name = "ButtonRow2" .. PageTitle
+		ButtonRow2.Parent = Page
+		ButtonRow2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ButtonRow2.BackgroundTransparency = 1.000
+		ButtonRow2.BorderSizePixel = 0
+		ButtonRow2.Position = UDim2.new(0.507151604, 0, 0, 0)
+		ButtonRow2.Size = UDim2.new(0.492848307, 0, 0.999999762, 0)
+		ButtonRow2.ZIndex = 5
+
+		local UIPadding_3 = Instance.new("UIPadding")
+		UIPadding_3.Parent = ButtonRow2
+		UIPadding_3.PaddingLeft = UDim.new(0.0790000036, 0)
+		UIPadding_3.PaddingRight = UDim.new(0.0299999993, 0)
+		UIPadding_3.PaddingTop = UDim.new(0.025, 0)
+
+		local UIListLayout_4 = Instance.new("UIListLayout")
+		UIListLayout_4.Parent = ButtonRow2
+		UIListLayout_4.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_4.Padding = UDim.new(0.0299999993, 0)
+
+		function TabChange()
+			TabButton.MouseButton1Click:Connect(function()
+				print("working")
+				Page.Visible = true
+				Cool2.Visible = true
+				for i,v in pairs(Main:GetChildren()) do
+					if v ~= Page and v.ZIndex == 5 then
+						v.Visible = false
+					end
+				end
+				for i,v in pairs(Menus:GetDescendants()) do
+					if v ~= Cool2 and v:IsA("Frame") then
+						v.Visible = false
+					end
+				end
+				TabButton.BackgroundColor3 = Color3.fromRGB(46, 46, 46) 
+			end)
+		end
+		coroutine.wrap(TabChange)()
+
+
+	--[[
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	--]]
+
+		local PageLibrary = {}
+
+		function PageLibrary.AddButton(Text, Side, Callback)
+
+			local Parent
+			if Side == "Left" then Parent = ButtonRow1 elseif Side == "Right" then Parent = ButtonRow2 end
+
+			local Button = Instance.new("Frame")
+			Button.Name = "Button"
+			Button.Parent = Parent
+			Button.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+			Button.BackgroundTransparency = 1.000
+			Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Button.Position = UDim2.new(0.0199999325, 0, 0.0799999088, 0)
+			Button.Size = UDim2.new(0.940799892, 0, 0.115887977, 0)
+
+			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+			UIAspectRatioConstraint.Parent = Button
+			UIAspectRatioConstraint.AspectRatio = 13.023
+
+			local MainButton = Instance.new("Frame")
+			MainButton.Name = "MainButton"
+			MainButton.Parent = Button
+			MainButton.BackgroundColor3 = Color3.fromRGB(79, 79, 79)
+			MainButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			MainButton.Size = UDim2.new(0.0789705887, 0, 0.973689079, 0)
+
+			local Inside = Instance.new("ImageButton")
+			Inside.Name = "Inside"
+			Inside.Parent = MainButton
+			Inside.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+			Inside.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Inside.Position = UDim2.new(0.150000006, 0, 0.150000006, 0)
+			Inside.Size = UDim2.new(0.699999988, 0, 0.699999988, 0)
+			Inside.Image = "rbxassetid://0"
+
+			local TextLabel_2 = Instance.new("TextLabel")
+			TextLabel_2.Parent = Button
+			TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel_2.BackgroundTransparency = 1.000
+			TextLabel_2.BorderColor3 = Color3.fromRGB(27, 42, 53)
+			TextLabel_2.Position = UDim2.new(0.0671254843, 0, 0, 0)
+			TextLabel_2.Size = UDim2.new(0.330985665, 0, 0.973689079, 0)
+			TextLabel_2.Font = Enum.Font.GothamSemibold
+			TextLabel_2.Text = Text
+			TextLabel_2.TextColor3 = Color3.fromRGB(170, 170, 170)
+			TextLabel_2.TextSize = 9.000
+			TextLabel_2.TextYAlignment = Enum.TextYAlignment.Bottom
+
+
+
+			function Button()
+				local Color = true
+				Inside.MouseButton1Down:Connect(function()
+					if Color == true then
+						Color = not Color
+						Inside.BackgroundColor3 = Color3.fromRGB(170,170,170)
+					else
+						Color = not Color
+						Inside.BackgroundColor3 = Color3.fromRGB(46,46,46)
+					end
+					Callback()
+				end)
+			end
+			coroutine.wrap(Button)()
+		end
+	--[[
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	--]]
+
+		function PageLibrary.AddCategory(Size, Side, Text)
+
+			local Parent
+			local Parent2
+			if Side == "Left" then 
+				Parent = ButtonRow1 
+				Parent2 = Row1 
+			elseif Side == "Right" then 
+				Parent = ButtonRow2 
+				Parent2 = Row2 
+			end
+
+			local NoButton = Instance.new("Frame")
+			NoButton.Name = "NoButton"
+			NoButton.Parent = Parent2
+			NoButton.BackgroundTransparency = 0
+			NoButton.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+			NoButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			NoButton.Position = UDim2.new(0.0500000007, 0, 0.0500000678, 0)
+			NoButton.Size = UDim2.new(0.994816244, 0, Size, 0)
+
+			local Title = Instance.new("Frame")
+			Title.Name = "Title"
+			Title.Parent = Parent
+			Title.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+			Title.BackgroundTransparency = 1.000
+			Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Title.Position = UDim2.new(0.0199999325, 0, 0.0799999088, 0)
+			Title.Size = UDim2.new(0.940799892, 0, 0.115887977, 0)
+			Title.ZIndex = 4
+
+			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+			UIAspectRatioConstraint.Parent = Title
+			UIAspectRatioConstraint.AspectRatio = 13.023
+
+			local SpacerText = Instance.new("TextLabel")
+			SpacerText.Name = "SpacerText"
+			SpacerText.Parent = Title
+			SpacerText.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+			SpacerText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			SpacerText.Position = UDim2.new(0.333701849, 0, -0.240204141, 0)
+			SpacerText.Size = UDim2.new(0.314377636, 0, 1.16228127, 0)
+			SpacerText.ZIndex = 10
+			SpacerText.Font = Enum.Font.GothamSemibold
+			SpacerText.Text = "Combat"
+			SpacerText.TextColor3 = Color3.fromRGB(170, 170, 170)
+			SpacerText.TextSize = 10.000
+
+			local SpacerText_2 = Instance.new("TextLabel")
+			SpacerText_2.Name = "SpacerText"
+			SpacerText_2.Parent = SpacerText
+			SpacerText_2.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+			SpacerText_2.BorderColor3 = Color3.fromRGB(79, 79, 79)
+			SpacerText_2.Position = UDim2.new(0.0199999996, 0, 0.1, 0)
+			SpacerText_2.Size = UDim2.new(0.970000029, 0, 0.8, 0)
+			SpacerText_2.ZIndex = 10
+			SpacerText_2.Font = Enum.Font.GothamSemibold
+			SpacerText_2.Text = Text
+			SpacerText_2.TextColor3 = Color3.fromRGB(170, 170, 170)
+			SpacerText_2.TextSize = 10.000
+
+			local Yh = Instance.new("Frame")
+			Yh.Name = "Yh"
+			Yh.Parent = NoButton
+			Yh.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+			Yh.BorderColor3 = Color3.fromRGB(79, 79, 79)
+			Yh.Position = UDim2.new(0.00999999978, 0, 0, 0)
+			Yh.Size = UDim2.new(0.985000014, 0, 0.995, 0)
+
+			local Mh = Instance.new("Frame")
+			Mh.Name = "Mh"
+			Mh.Parent = NoButton
+			Mh.BackgroundColor3 = Color3.fromRGB(6, 255, 160)
+			Mh.BorderColor3 = Color3.fromRGB(79, 79, 79)
+			Mh.BorderSizePixel = 0
+			Mh.Position = UDim2.new(0.01, 0, -0.005, 0)
+			Mh.Size = UDim2.new(0.985000014, 0, 0.003, 0)
+			Mh.ZIndex = 3
+		end
+	--[[
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	--]]
+
+		function PageLibrary.AddSlider(Text, Side, ConfigurationDictionary, Callback)
+
+			local Parent
+			if Side == "Left" then Parent = ButtonRow1 elseif Side == "Right" then Parent = ButtonRow2 end
+
+			local Configuration = ConfigurationDictionary
+			local Minimum = Configuration.Minimum or Configuration.minimum or Configuration.Min or Configuration.min
+			local Maximum = Configuration.Maximum or Configuration.maximum or Configuration.Max or Configuration.max
+			local Default = Configuration.Default or Configuration.default or Configuration.Def or Configuration.def
+
+			if Minimum > Maximum then
+				local StoreValue = Minimum
+				Minimum = Maximum
+				Maximum = StoreValue
+			end
+
+			Default = math.clamp(Default, Minimum, Maximum)
+
+			local DefaultScale = Default/Maximum
+
+			local Bar = Instance.new("TextButton")
+			Bar.Name = "Bar"
+			Bar.Parent = Parent
+			Bar.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+			Bar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Bar.ClipsDescendants = true
+			Bar.Position = UDim2.new(0.0199999325, 0, 0.0799999088, 0)
+			Bar.Size = UDim2.new(0.940799892, 0, 0.115887977, 0)
+			Bar.Text = ""
+			Bar.AutoButtonColor = false
+
+			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+			UIAspectRatioConstraint.Parent = Bar
+			UIAspectRatioConstraint.AspectRatio = 13.023
+
+			local Fill = Instance.new("Frame")
+			Fill.Name = "Fill"
+			Fill.Parent = Bar
+			Fill.BorderSizePixel = 0
+			Fill.BackgroundColor3 = Color3.fromRGB(79, 79, 79)
+			Fill.Size = UDim2.new(DefaultScale, 0, 1, 0)
+
+			local Changing = Instance.new("TextLabel")
+			Changing.Name = "Changing"
+			Changing.Parent = Bar
+			Changing.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Changing.BackgroundTransparency = 1.000
+			Changing.Size = UDim2.new(1, 0, 1, 0)
+			Changing.Font = Enum.Font.GothamBold
+			Changing.Text = Text
+			Changing.TextColor3 = Color3.fromRGB(170, 170, 170)
+			Changing.Text = Text..": "..tostring(Default)
+
+			local dragging = false
+			Bar.MouseButton1Down:Connect(function()
+				dragging = true
+			end)
+			UserInputService.InputChanged:Connect(function()
+				if dragging == true then
+					local X, Y, XScale, YScale = GetXY(Bar)
+					local Value = math.floor(Minimum + ((Maximum - Minimum) * XScale))
+					Callback(Value)
+					Changing.Text = Text..": "..tostring(Value)
+					local TargetSize = UDim2.new(XScale,0,1,0)
+					Tween(Fill, {Size = TargetSize})
+					local SliderMove, SliderKill
+					SliderMove = Mouse.Move:Connect(function()
+						if dragging == true then
+							local X, Y, XScale, YScale = GetXY(Bar)
+							local Value = math.floor(Minimum + ((Maximum - Minimum) * XScale))
+							Callback(Value)
+							Changing.Text = Text..": "..tostring(Value)
+							local TargetSize = UDim2.new(XScale,0,1,0)
+							Tween(Fill, {Size = TargetSize})
+						end
+					end)
+				end
+			end)
+			SliderKill = UserInputService.InputEnded:Connect(function(UserInput)
+				if UserInput.UserInputType == Enum.UserInputType.MouseButton1 then
+					dragging = false
+					Tween(Fill, {ImageTransparency = 0.7})
+					SliderMove:Disconnect()
+					SliderKill:Disconnect()
+				end
+			end)
+		end
+
+	--[[
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	|   |   |   |   |   |   |   |   |   |
+	--]]
+		function PageLibrary.AddInputButton(Text, Side, Callback)
+			local Parent
+			if Side == "Left" then Parent = ButtonRow1 elseif Side == "Right" then Parent = ButtonRow2 end
+			local Color = true
+			local selecting = false
+			local keyn
+
+			local InputButton = Instance.new("Frame")
+			InputButton.Name = "InputButton"
+			InputButton.Parent = Parent
+			InputButton.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+			InputButton.BackgroundTransparency = 1.000
+			InputButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			InputButton.Position = UDim2.new(0.0199999325, 0, 0.0799999088, 0)
+			InputButton.Size = UDim2.new(0.940799892, 0, 0.115887977, 0)
+
+			local UIAspectRatioConstraint_6 = Instance.new("UIAspectRatioConstraint")
+			UIAspectRatioConstraint_6.Parent = InputButton
+			UIAspectRatioConstraint_6.AspectRatio = 13.023
+
+			local MainButton_2 = Instance.new("Frame")
+			MainButton_2.Name = "MainButton"
+			MainButton_2.Parent = InputButton
+			MainButton_2.BackgroundColor3 = Color3.fromRGB(79, 79, 79)
+			MainButton_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			MainButton_2.Size = UDim2.new(0.0789705887, 0, 0.973689079, 0)
+
+			local Inside_2 = Instance.new("ImageButton")
+			Inside_2.Name = "Inside"
+			Inside_2.Parent = MainButton_2
+			Inside_2.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+			Inside_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Inside_2.Position = UDim2.new(0.150000006, 0, 0.150000006, 0)
+			Inside_2.Size = UDim2.new(0.699999988, 0, 0.699999988, 0)
+			Inside_2.Image = "rbxassetid://0"
+
+			local TextLabel_3 = Instance.new("TextLabel")
+			TextLabel_3.Parent = InputButton
+			TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel_3.BackgroundTransparency = 1.000
+			TextLabel_3.BorderColor3 = Color3.fromRGB(27, 42, 53)
+			TextLabel_3.Position = UDim2.new(0.0671254843, 0, 0, 0)
+			TextLabel_3.Size = UDim2.new(0.330985665, 0, 0.973689079, 0)
+			TextLabel_3.Font = Enum.Font.GothamSemibold
+			TextLabel_3.Text = Text
+			TextLabel_3.TextColor3 = Color3.fromRGB(170, 170, 170)
+			TextLabel_3.TextSize = 9.000
+			TextLabel_3.TextYAlignment = Enum.TextYAlignment.Bottom
+
+			local InputBut = Instance.new("TextButton")
+			InputBut.Parent = InputButton
+			InputBut.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			InputBut.BackgroundTransparency = 1.000
+			InputBut.Position = UDim2.new(0.648000002, 0, 0, 0)
+			InputBut.Size = UDim2.new(0.330000013, 0, 1, 0)
+			InputBut.Font = Enum.Font.SourceSans
+			InputBut.Text = "[ . . . ]"
+			InputBut.TextColor3 = Color3.fromRGB(170, 170, 170)
+			InputBut.TextScaled = true
+			InputBut.TextSize = 11.000
+			InputBut.TextWrapped = true
+
+
+			function InputButton()
+				InputBut.MouseButton1Click:Connect(function()
+					selecting = false
+					if selecting == false then
+						InputBut.Text = "[ . . . ]"
+						UserInputService.InputBegan:Connect(function(input, gameProcessed)
+							if selecting == false then
+								local key = string.split(tostring(input.KeyCode), ".")
+								InputBut.Text = "[ " .. key[3] .. " ]"
+								keyn = input.KeyCode
+								wait(0.1)
+								selecting = true
+							end
+						end)
+					end
+				end)
+				UserInputService.InputBegan:Connect(function(input, gameProcessed)
+					if selecting == true then
+						if input.KeyCode == keyn then
+							if Color == true then
+								Color = not Color
+								Inside_2.BackgroundColor3 = Color3.fromRGB(170,170,170)
+							else
+								Color = not Color
+								Inside_2.BackgroundColor3 = Color3.fromRGB(46,46,46)
+							end
+							Callback()
+						end
+					end
+				end)
+				Inside_2.MouseButton1Down:Connect(function()
+					if Color == true then
+						Color = not Color
+						Inside_2.BackgroundColor3 = Color3.fromRGB(170,170,170)
+					else
+						Color = not Color
+						Inside_2.BackgroundColor3 = Color3.fromRGB(46,46,46)
+					end
+					Callback()
+				end)
+			end
+			coroutine.wrap(InputButton)()
+		end
+
+		function PageLibrary.AddSpacer(Text, Side)
+
+			local Parent
+			if Side == "Left" then Parent = ButtonRow1 elseif Side == "Right" then Parent = ButtonRow2 end
+
+			local intName = Instance.new("Frame")
+			intName.Name = "idk"
+			intName.Parent = Parent
+			intName.BackgroundColor3 = Color3.fromRGB(46, 46, 46)
+			intName.BackgroundTransparency = 1.000
+			intName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			intName.Position = UDim2.new(0.02, 0, 0.08, 0)
+			intName.Size = UDim2.new(0.95, 0, 0.1, 0)
+
+			local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+			UIAspectRatioConstraint.Parent = intName
+			UIAspectRatioConstraint.AspectRatio = 13.023
+
+			local Frame = Instance.new("Frame")
+			Frame.Parent = intName
+			Frame.BackgroundColor3 = Color3.fromRGB(79, 79, 79)
+			Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Frame.Position = UDim2.new(0.0199999996, 0, 0.449999988, 0)
+			Frame.Size = UDim2.new(0.949999988, 0, 0.0700000003, 0)
+
+			local HeaderText = Instance.new("TextLabel")
+			HeaderText.Name = "SpacerText"
+			HeaderText.Parent = intName
+			HeaderText.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+			HeaderText.BorderSizePixel = 0
+			HeaderText.Position = UDim2.new(0.210588217, 0, -0.137717411, 0)
+			HeaderText.Size = UDim2.new(0.57391119, 0, 1.16228127, 0)
+			HeaderText.ZIndex = 10
+			HeaderText.Font = Enum.Font.GothamSemibold
+			HeaderText.Text = Text
+			HeaderText.TextColor3 = Color3.fromRGB(170, 170, 170)
+			HeaderText.TextSize = 10.000
+
+		end
+
+		return PageLibrary
+
+	end
+	return TabLibrary
+end
+return UILibrary
