@@ -738,7 +738,6 @@ function UILibrary.Load(GUITitle)
 					end
 				end)
 				Inside_2.MouseButton1Down:Connect(function(i,gameProcessed)
-					if gameProcessed then return end
 					if Color == true then
 						Color = not Color
 						Inside_2.BackgroundColor3 = Color3.fromRGB(170,170,170)
