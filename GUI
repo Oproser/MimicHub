@@ -308,7 +308,7 @@ function UILibrary.Load(GUITitle)
 		ButtonRow1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		ButtonRow1.BackgroundTransparency = 1.000
 		ButtonRow1.BorderSizePixel = 0
-		ButtonRow1.Size = UDim2.new(0.493, 0, 0.1, 0)
+		ButtonRow1.Size = UDim2.new(0.493, 0, 1, 0)
 		ButtonRow1.ZIndex = 5
 
 		local UIPadding_3 = Instance.new("UIPadding")
@@ -350,7 +350,7 @@ function UILibrary.Load(GUITitle)
 		ButtonRow2.BackgroundTransparency = 1.000
 		ButtonRow2.BorderSizePixel = 0
 		ButtonRow2.Position = UDim2.new(0.507151604, 0, 0, 0)
-		ButtonRow2.Size = UDim2.new(0.493, 0, 0.1, 0)
+		ButtonRow2.Size = UDim2.new(0.493, 0, 1, 0)
 		ButtonRow2.ZIndex = 5
 
 		local UIPadding_3 = Instance.new("UIPadding")
