@@ -970,21 +970,21 @@ function UILibrary.Load(GUITitle)
 				UIAspectRatioConstraint_6.Parent = InputButton
 				UIAspectRatioConstraint_6.AspectRatio = 13.023
 
-				local TextLabel_3 = Instance.new("TextLabel")
-				TextLabel_3.Parent = InputButton
-				TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-				TextLabel_3.BackgroundTransparency = 1.000
-				TextLabel_3.BorderColor3 = Color3.fromRGB(27, 42, 53)
-				TextLabel_3.Position = UDim2.new(0, 0, 0.1, 0)
-				TextLabel_3.Size = UDim2.new(0.358, 0, 0.88, 0)
-				TextLabel_3.Font = Enum.Font.GothamSemibold
-				TextLabel_3.Text = "Keybind"
-				TextLabel_3.TextScaled = true
-				TextLabel_3.TextWrapped = true
-				TextLabel_3.TextXAlignment = "Left"
-				TextLabel_3.TextColor3 = Color3.fromRGB(170, 170, 170)
-				TextLabel_3.TextSize = 9.000
-				TextLabel_3.TextYAlignment = Enum.TextYAlignment.Bottom
+			local TextLabel_3 = Instance.new("TextLabel")
+			TextLabel_3.Parent = InputButton
+			TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel_3.BackgroundTransparency = 1.000
+			TextLabel_3.BorderColor3 = Color3.fromRGB(27, 42, 53)
+			TextLabel_3.Position = UDim2.new(0.12, 0, 0.16, 0)
+			TextLabel_3.Size = UDim2.new(0.649, 0, 0.745, 0)
+			TextLabel_3.Font = Enum.Font.GothamSemibold
+			TextLabel_3.Text = Text
+			TextLabel_3.TextScaled = true
+			TextLabel_3.TextWrapped = true
+			TextLabel_3.TextXAlignment = "Left"
+			TextLabel_3.TextColor3 = Color3.fromRGB(170, 170, 170)
+			TextLabel_3.TextSize = 9.000
+			TextLabel_3.TextYAlignment = Enum.TextYAlignment.Bottom
 
 				local InputBut = Instance.new("TextButton")
 				InputBut.Parent = InputButton
