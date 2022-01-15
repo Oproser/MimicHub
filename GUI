@@ -841,7 +841,7 @@ function UILibrary.Load(GUITitle)
 			if Side == "Right" then
 				Settings.Position = UDim2.new(1.178, 0, -0.165, 0)
 			else
-				Settings.Position = UDim2.new(1.178, 0, -0.33, 0)
+				Settings.Position = UDim2.new(-1.005, 0, -0.165, 0)
 				
 			end
 			Settings.Size = UDim2.new(0.627, 0, 1.243, 0)
