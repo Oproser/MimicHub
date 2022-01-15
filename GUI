@@ -838,7 +838,12 @@ function UILibrary.Load(GUITitle)
 			Settings.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
 			Settings.BackgroundTransparency = 1.000
 			Settings.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			Settings.Position = UDim2.new(1.178, 0, -0.165, 0)
+			if Side == "Right" then
+				Settings.Position = UDim2.new(1.178, 0, -0.165, 0)
+			else
+				Settings.Position = UDim2.new(1.178, 0, -0.33, 0)
+				
+			end
 			Settings.Size = UDim2.new(0.627, 0, 1.243, 0)
 			Settings.ZIndex = 5
 
